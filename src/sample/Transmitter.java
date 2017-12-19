@@ -2,7 +2,7 @@ package sample;
 
 public class Transmitter {
     private World world;
-    private static Integer count;
+    private static Integer count = 0;
     private Integer id;
     private Integer positionX;
     private Integer positionY;
@@ -26,5 +26,9 @@ public class Transmitter {
 
     public Integer getPositionY() {
         return positionY;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }

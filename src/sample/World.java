@@ -18,7 +18,13 @@ public class World {
         for (Transmitter transmitter : listOfTransmitters) {
             Double distance = Math.sqrt(Math.pow(positionXOfRobot-transmitter.getPositionX(),2)
                     +Math.pow(positionYOfRobot-transmitter.getPositionY(),2));
-            Double RSSI = factorA - factorN * Math.log10(distance);
+            Double RSSI;
+            if(distance == 0){
+                RSSI = factorA.doubleValue();
+            }
+            else {
+                RSSI = factorA - factorN * Math.log10(distance);
+            }
             RSSIs.add(RSSI);
         }
         return RSSIs;
@@ -28,7 +34,13 @@ public class World {
         Transmitter transmitter = listOfTransmitters.get(id);
         Double distance = Math.sqrt(Math.pow(positionXOfRobot-transmitter.getPositionX(),2)
                 +Math.pow(positionYOfRobot-transmitter.getPositionY(),2));
-        Double RSSI = factorA - factorN * Math.log10(distance);
+        Double RSSI;
+        if(distance == 0){
+            RSSI = factorA.doubleValue();
+        }
+        else {
+            RSSI = factorA - factorN * Math.log10(distance);
+        }
         return RSSI;
     }
 
@@ -40,12 +52,12 @@ public class World {
         //factorN = random.nextInt(10);
         factorA = 100;
         factorN = 5;
-        positionXOfRobot = random.nextInt(height)+1;
-        positionYOfRobot = random.nextInt(width)+1;
+        positionXOfRobot = random.nextInt(width-10)+5;
+        positionYOfRobot = random.nextInt(height-10)+5;
         robot = new Robot(this);
         listOfTransmitters = new LinkedList<>();
         for(int i=0; i<3; ++i){
-            Transmitter transmitter = new Transmitter(this, random.nextInt(height-3)+2, random.nextInt(width-3)+2);
+            Transmitter transmitter = new Transmitter(this, random.nextInt(width-10)+5, random.nextInt(height-10)+5);
             listOfTransmitters.add(transmitter);
         }
     }
