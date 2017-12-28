@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.shape.Circle;
+
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -44,7 +46,7 @@ public class World {
         return RSSI;
     }
 
-    public World(Integer height, Integer width) {
+    public World(Integer height, Integer width, Circle rob) {
         this.height = height;
         this.width = width;
         Random random = new Random();
@@ -54,7 +56,7 @@ public class World {
         factorN = 5;
         positionXOfRobot = random.nextInt(width-10)+5;
         positionYOfRobot = random.nextInt(height-10)+5;
-        robot = new Robot(this);
+        robot = new Robot(this, rob);
         listOfTransmitters = new LinkedList<>();
         for(int i=0; i<3; ++i){
             Transmitter transmitter = new Transmitter(this, random.nextInt(width-10)+5, random.nextInt(height-10)+5);

@@ -1,8 +1,13 @@
 package sample;
 
+import javafx.fxml.FXML;
+import javafx.scene.shape.Circle;
+
 import java.util.LinkedList;
 
-public class Robot {
+public class Robot extends Thread {
+    @FXML
+    private Circle robot;
     private enum Direction {NORTH, SOUTH, EAST, WEST}
     private final World world;
     private LinkedList<LinkedList<Integer>> listOfRSSIlists;
@@ -13,13 +18,21 @@ public class Robot {
     private Integer moveCounter = 0;
     private LinkedList<LinkedList<Double>> transmitterPosition;
     private Integer idOfNearest;
-    public Robot(World world) {
+    public Robot(World world, Circle robot) {
         this.world = world;
+        this.robot = robot;
         listOfRSSIlists = new LinkedList<>();
-
     }
 
-    private void move(Direction direction){
+    public void run() {
+        try{
+            goToTriangle();
+        }catch (InterruptedException ex){
+            System.out.println("Interrupted");
+        }
+    }
+
+    private void move(Direction direction) throws InterruptedException{
         switch(direction) {
             case NORTH:
                 if (world.getHeight() > world.getPositionYOfRobot() + 1) {
@@ -27,14 +40,17 @@ public class Robot {
                     moveCounter++;
                     positionY++;
                 }
+                robot.setCenterY(robot.getCenterY()+1);
+                this.sleep(50);
                 break;
             case SOUTH:
                 if (world.getPositionYOfRobot() - 1 > 0) {
                     world.setPositionYOfRobot(world.getPositionYOfRobot() - 1);
                     moveCounter++;
                     positionY--;
-
                 }
+                robot.setCenterY(robot.getCenterY()-1);
+                this.sleep(50);
                 break;
             case EAST:
                 if (world.getWidth() > world.getPositionXOfRobot() + 1) {
@@ -42,6 +58,8 @@ public class Robot {
                     moveCounter++;
                     positionX++;
                 }
+                robot.setCenterX(robot.getCenterX()+1);
+                this.sleep(50);
                 break;
             case WEST:
                 if (world.getPositionXOfRobot() - 1 > 0) {
@@ -49,39 +67,31 @@ public class Robot {
                     moveCounter++;
                     positionX--;
                 }
+                robot.setCenterX(robot.getCenterX()-1);
+                this.sleep(50);
                 break;
         }
-//        System.out.println("move to ("+positionX+","+positionY+")");
     }
 
-    public void insideTriangle() {
-        //TODO
-    }
-
-    public void outsideTriangle() {
-        //TODO
-    }
-
-    public void goToTriangle() {
+    public void goToTriangle() throws InterruptedException {
         positionX = world.getPositionXOfRobot();
         positionY = world.getPositionYOfRobot();
         idOfNearest = findNearestTransmitter();
         goToTransmitter(idOfNearest);
         factorA = world.measureRSSI(idOfNearest);
-        System.out.println(factorA);
         findMid(idOfNearest);
-        System.out.println("DONE");
         factorN = findFactorN(idOfNearest);
-        System.out.println("DONE");
-        System.out.println(factorN);
 
         //Setting new coordinate system
         positionX = 0;
         positionY = 0;
         transmitterPosition = findTransmittersPosition();
         LinkedList<Double> finalPosition = finalPosition();
-        System.out.println("FInal position: "+finalPosition.get(0)+","+finalPosition.get(1));
         goToPosition(finalPosition);
+        System.out.println("Robot: "+world.getPositionXOfRobot()+", "+world.getPositionYOfRobot());
+        System.out.println("Antena: "+world.getListOfTransmitters().get(0).getPositionX()+", "+world.getListOfTransmitters().get(0).getPositionY());
+        System.out.println("Antena: "+world.getListOfTransmitters().get(1).getPositionX()+", "+world.getListOfTransmitters().get(1).getPositionY());
+        System.out.println("Antena: "+world.getListOfTransmitters().get(2).getPositionX()+", "+world.getListOfTransmitters().get(2).getPositionY());
     }
 
     private int findNearestTransmitter() {
@@ -97,7 +107,7 @@ public class Robot {
         return id;
     }
 
-    private void goToPosition(LinkedList<Double> finalPosition) {
+    private void goToPosition(LinkedList<Double> finalPosition) throws InterruptedException {
         Integer x = finalPosition.get(0).intValue() - positionX;
         Integer y = finalPosition.get(1).intValue() - positionY;
         if(x>0){
@@ -122,7 +132,7 @@ public class Robot {
         }
     }
 
-    private void goToTransmitter(final int id) {
+    private void goToTransmitter(final int id) throws InterruptedException {
         Double currentRSSI = world.measureRSSI(id);
 
         move(Direction.NORTH);
@@ -157,7 +167,7 @@ public class Robot {
         move(Direction.EAST);
     }
 
-    private Double findFactorN(int id) {
+    private Double findFactorN(int id) throws InterruptedException {
         while(factorA.equals(world.measureRSSI(id))) {
             move(Direction.NORTH);
         }
@@ -165,7 +175,7 @@ public class Robot {
         return Double.valueOf(Math.round(factN));
     }
 
-    private LinkedList<LinkedList<Double>> findTransmittersPosition() {
+    private LinkedList<LinkedList<Double>> findTransmittersPosition() throws InterruptedException {
 
         LinkedList<LinkedList<Double>> distances = new LinkedList<>();
         distances.add(new LinkedList<>());
@@ -174,7 +184,6 @@ public class Robot {
         for(int i = 0; i < 3; ++i) {
             for(int j = 0; j < 3; ++j){
                 distances.get(j).add(Math.pow(10,(factorA-world.measureRSSI(j))/factorN));
-                System.out.println(distances.get(j).get(i));
             }
             if(i==0) {
                 move(Direction.NORTH);
@@ -191,10 +200,6 @@ public class Robot {
             Double y = (Math.pow(distances.get(i).get(0),2)+1-Math.pow(distances.get(i).get(1),2))/2;
             LinkedList<Double> pos = new LinkedList<>();
             pos.add(x); pos.add(y);
-            System.out.println("Powinno byc: "+(world.getListOfTransmitters().get(idOfNearest).getPositionX()+
-                    x)+" "+(world.getListOfTransmitters().get(idOfNearest).getPositionY()+
-                    y+2));
-            System.out.println("pozycje: "+x+" "+y);
             positionList.add(pos);
         }
 
@@ -202,22 +207,22 @@ public class Robot {
     }
 
     private LinkedList<Double> finalPosition() {
-        Integer xMin = transmitterPosition.get(0).get(0).intValue(),
-                xMax = transmitterPosition.get(0).get(0).intValue(),
-                yMin = transmitterPosition.get(0).get(1).intValue(),
-                yMax = transmitterPosition.get(0).get(1).intValue();
+        Integer xMin = Math.toIntExact(Math.round(transmitterPosition.get(0).get(0))),
+                xMax = Math.toIntExact(Math.round(transmitterPosition.get(0).get(0).intValue())),
+                yMin = Math.toIntExact(Math.round(transmitterPosition.get(0).get(1).intValue())),
+                yMax = Math.toIntExact(Math.round(transmitterPosition.get(0).get(1).intValue()));
         for(LinkedList<Double> transmitter : transmitterPosition) {
             if(transmitter.get(0)>xMax) {
-                xMax = transmitter.get(0).intValue();
+                xMax = Math.toIntExact(Math.round(transmitter.get(0)));
             }
             if(transmitter.get(0)<xMin) {
-                xMin = transmitter.get(0).intValue();
+                xMin = Math.toIntExact(Math.round(transmitter.get(0)));
             }
             if(transmitter.get(1)>yMax) {
-                yMax = transmitter.get(1).intValue();
+                yMax = Math.toIntExact(Math.round(transmitter.get(1)));
             }
             if(transmitter.get(1)<yMin) {
-                yMin = transmitter.get(1).intValue();
+                yMin = Math.toIntExact(Math.round(transmitter.get(1)));
             }
         }
         LinkedList<Double> mid = new LinkedList<>();
@@ -226,37 +231,25 @@ public class Robot {
         return mid;
     }
 
-    private void findMid(Integer id) {
+    private void findMid(Integer id) throws InterruptedException {
         move(Direction.NORTH);
         if(factorA.equals(world.measureRSSI(id))) {
-            System.out.println("X"+positionX);
-            System.out.println("y"+positionY);
-//            move(Direction.SOUTH);
             return;
         }
         move(Direction.SOUTH);
         move(Direction.EAST);
         if(factorA.equals(world.measureRSSI(id))) {
-            System.out.println("X"+positionX);
-            System.out.println("y"+positionY);
-//            move(Direction.WEST);
             return;
         }
         move(Direction.WEST);
         move(Direction.SOUTH);
         if(factorA.equals(world.measureRSSI(id))) {
-            System.out.println("X"+positionX);
-            System.out.println("y"+positionY);
-//            move(Direction.NORTH);
             return;
         }
         move(Direction.NORTH);
 
         move(Direction.WEST);
         if(factorA.equals(world.measureRSSI(id))) {
-            System.out.println("X"+positionX);
-            System.out.println("y"+positionY);
-//            move(Direction.EAST);
             return;
         }
         move(Direction.EAST);

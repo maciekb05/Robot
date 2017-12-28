@@ -14,12 +14,6 @@ public class Transmitter {
         this.positionY = positionY;
     }
 
-    public Integer sendRSSI() {
-        Integer RSSI = 0;
-        //TODO obliczenie i wyslanie RSSI
-        return RSSI;
-    }
-
     public Integer getPositionX() {
         return positionX;
     }
