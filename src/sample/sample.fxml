@@ -6,12 +6,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
-
+<?import javafx.scene.shape.Line?>
 
 <BorderPane fx:id="main" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <center>
       <Pane fx:id="mapPane" BorderPane.alignment="CENTER">
          <children>
+            <Line fx:id="line12" endX="100.0" startX="-100.0" strokeWidth="2.0" visible="false" />
+            <Line fx:id="line23" endX="100.0" startX="-100.0" strokeWidth="2.0" visible="false" />
+            <Line fx:id="line13" endX="100.0" startX="-100.0" strokeWidth="2.0" visible="false" />
             <Circle fx:id="transmitter1" fill="DODGERBLUE" radius="5.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
             <Circle fx:id="transmitter2" fill="DODGERBLUE" radius="5.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
             <Circle fx:id="transmitter3" fill="DODGERBLUE" radius="5.0" stroke="BLACK" strokeType="INSIDE" visible="false" />

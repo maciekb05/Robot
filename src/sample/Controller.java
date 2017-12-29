@@ -2,10 +2,12 @@ package sample;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+
+import java.awt.*;
 
 public class Controller {
     World world;
@@ -25,6 +27,13 @@ public class Controller {
     VBox left;
 
     @FXML
+    Line line12;
+    @FXML
+    Line line23;
+    @FXML
+    Line line13;
+
+    @FXML
     public void initialize() {
         world = new World(200, 400, robot);
 
@@ -41,7 +50,26 @@ public class Controller {
         System.out.println(transmitter1.getCenterX()+", "+transmitter1.getCenterY());
         System.out.println(transmitter2.getCenterX()+", "+transmitter2.getCenterY());
         System.out.println(transmitter3.getCenterX()+", "+transmitter3.getCenterY());
+        line12.setStartX(world.getListOfTransmitters().get(0).getPositionX());
+        line12.setStartY(world.getListOfTransmitters().get(0).getPositionY());
+        line12.setEndX(world.getListOfTransmitters().get(1).getPositionX());
+        line12.setEndY(world.getListOfTransmitters().get(1).getPositionY());
 
+        line23.setStartX(world.getListOfTransmitters().get(1).getPositionX());
+        line23.setStartY(world.getListOfTransmitters().get(1).getPositionY());
+        line23.setEndX(world.getListOfTransmitters().get(2).getPositionX());
+        line23.setEndY(world.getListOfTransmitters().get(2).getPositionY());
+
+        line13.setStartX(world.getListOfTransmitters().get(0).getPositionX());
+        line13.setStartY(world.getListOfTransmitters().get(0).getPositionY());
+        line13.setEndX(world.getListOfTransmitters().get(2).getPositionX());
+        line13.setEndY(world.getListOfTransmitters().get(2).getPositionY());
+
+        mapPane.setBorder(new Border(new BorderStroke(Paint.valueOf("black"),
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        line12.setVisible(true);
+        line23.setVisible(true);
+        line13.setVisible(true);
         robot.setVisible(true);
         transmitter1.setVisible(true);
         transmitter2.setVisible(true);
