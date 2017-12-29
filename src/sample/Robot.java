@@ -288,7 +288,7 @@ public class Robot extends Thread {
         if(x1.equals(x2)){
             A=0.0;
             B=1.0;
-            C=Double.valueOf(x1);
+            C=-Double.valueOf(x1);
         }else{
             A=1.0;
             B=-Double.valueOf((y1-y2)/(x1-x2));
