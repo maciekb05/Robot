@@ -111,27 +111,31 @@ public class Robot extends Thread {
         Integer x = finalPosition.get(0).intValue() - positionX;
         Integer y = finalPosition.get(1).intValue() - positionY;
         if(x>0){
-            for(int i = 0; i < x; ++i){
+            int i=0;
+            while (i < x && !checkIfInTriangle()){
                 move(Direction.EAST);
-                if(checkIfInTriangle()) break;
+                i++;
             }
         }
         if(x<0 && !checkIfInTriangle()){
-            for(int i = 0; i < -x; ++i){
+            int i=0;
+            while (i < -x && !checkIfInTriangle()){
                 move(Direction.WEST);
-                if(checkIfInTriangle()) break;
+                i++;
             }
         }
         if(y>0 && !checkIfInTriangle()){
-            for(int i = 0; i < y; ++i){
+            int i=0;
+            while (i < y && !checkIfInTriangle()){
                 move(Direction.NORTH);
-                if(checkIfInTriangle()) break;
+                i++;
             }
         }
         if(y<0 && !checkIfInTriangle()){
-            for(int i = 0; i < -y; ++i){
+            int i=0;
+            while (i < -y && !checkIfInTriangle()){
                 move(Direction.SOUTH);
-                if(checkIfInTriangle()) break;
+                i++;
             }
         }
     }
@@ -259,42 +263,26 @@ public class Robot extends Thread {
         move(Direction.EAST);
     }
 
-    private boolean checkIfInTriangle() {
-        LinkedList<LinkedList<Double>> straights = new LinkedList<>();
-        LinkedList<Double> factors = new LinkedList<>();
-        factors = straightEquation(world.getListOfTransmitters().get(0).getPositionX(),world.getListOfTransmitters().get(0).getPositionY(),
-                world.getListOfTransmitters().get(1).getPositionX(),world.getListOfTransmitters().get(1).getPositionY());
-        straights.add(factors);
-        factors = straightEquation(world.getListOfTransmitters().get(1).getPositionX(),world.getListOfTransmitters().get(1).getPositionY(),
-                world.getListOfTransmitters().get(2).getPositionX(),world.getListOfTransmitters().get(2).getPositionY());
-        straights.add(factors);
-        factors = straightEquation(world.getListOfTransmitters().get(0).getPositionX(),world.getListOfTransmitters().get(0).getPositionY(),
-                world.getListOfTransmitters().get(2).getPositionX(),world.getListOfTransmitters().get(2).getPositionY());
-        straights.add(factors);
+    private double area(Double x1, Double y1, Double x2, Double y2,
+                        Double x3, Double y3)
+      {
+          return Math.abs((x1*(y2-y3) + x2*(y3-y1)+
+                  x3*(y1-y2))/2.0);
+      }
 
-        for(int i=0;i<3;i++){
-            Double A=straights.get(i).get(0); Double B=straights.get(i).get(1); Double C=straights.get(i).get(2);
-            Integer x= world.getListOfTransmitters().get(i).getPositionX(); Integer y= world.getListOfTransmitters().get(i).getPositionY();
-            if((A*x+B*y+C)*(A*positionX+B*positionY+C)<0){
-                return false;
-            }
-        }
+    private boolean checkIfInTriangle()
+    {
+        Double x1= transmitterPosition.get(0).get(0); Double y1= transmitterPosition.get(0).get(1);
+        Double x2= transmitterPosition.get(1).get(0); Double y2= transmitterPosition.get(1).get(1);
+        Double x3= transmitterPosition.get(2).get(0); Double y3= transmitterPosition.get(2).get(1);
+        double A = area (x1, y1, x2, y2, x3, y3);
 
-        return true;
-    }
-    private LinkedList<Double> straightEquation(Integer x1, Integer y1, Integer x2, Integer y2){
-        LinkedList<Double> factors = new LinkedList<>();
-        Double A,B,C;
-        if(x1.equals(x2)){
-            A=0.0;
-            B=1.0;
-            C=-Double.valueOf(x1);
-        }else{
-            A=1.0;
-            B=-Double.valueOf((y1-y2)/(x1-x2));
-            C=-(y1-A*x1);
-        }
-        factors.add(A); factors.add(B); factors.add(C);
-        return factors;
+        double A1 = area (Double.valueOf(positionX), Double.valueOf(positionY), x2, y2, x3, y3);
+
+        double A2 = area (x1, y1, Double.valueOf(positionX), Double.valueOf(positionY), x3, y3);
+
+        double A3 = area (x1, y1, x2, y2, Double.valueOf(positionX), Double.valueOf(positionY));
+
+        return (A == A1 + A2 + A3);
     }
 }
