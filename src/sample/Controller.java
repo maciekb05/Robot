@@ -1,13 +1,12 @@
 package sample;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
-import java.awt.*;
 
 public class Controller {
     World world;
@@ -25,6 +24,8 @@ public class Controller {
     BorderPane main;
     @FXML
     VBox left;
+    @FXML
+    Button simButton;
 
     @FXML
     Line line12;
@@ -32,6 +33,7 @@ public class Controller {
     Line line23;
     @FXML
     Line line13;
+
 
     @FXML
     public void initialize() {
@@ -80,5 +82,6 @@ public class Controller {
     public void simulate() {
         world.getRobot().setDaemon(true);
         world.getRobot().start();
+        simButton.setDisable(true);
     }
 }
