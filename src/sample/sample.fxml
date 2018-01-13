@@ -28,6 +28,7 @@
    <left>
       <VBox fx:id="left" alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
+            <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restart" text="Restart" />
             <Button fx:id="simButton" mnemonicParsing="false" onAction="#simulate" text="Simulate!" />
          </children>
          <padding>

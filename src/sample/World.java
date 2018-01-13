@@ -29,20 +29,18 @@ public class World {
         return RSSI;
     }
 
-    public World(Integer height, Integer width, Circle rob) {
+    World(Integer height, Integer width, Circle rob) {
         this.height = height;
         this.width = width;
         Random random = new Random();
-        //factorA = random.nextInt(height > width ? width : height)/10;
-        //factorN = random.nextInt(10);
-        factorA = 100;
-        factorN = 5;
+        factorA = random.nextInt(height > width ? width : height)/10;
+        factorN = random.nextInt(10);
         positionXOfRobot = random.nextInt(width-10)+5;
         positionYOfRobot = random.nextInt(height-10)+5;
         robot = new Robot(this, rob);
         listOfTransmitters = new LinkedList<>();
         for(int i=0; i<3; ++i){
-            Transmitter transmitter = new Transmitter(this, random.nextInt(width-10)+5, random.nextInt(height-10)+5);
+            Transmitter transmitter = new Transmitter(random.nextInt(width-10)+5, random.nextInt(height-10)+5);
             listOfTransmitters.add(transmitter);
         }
     }
@@ -75,21 +73,18 @@ public class World {
         Integer x1=  listOfTransmitters.get(0).getPositionX(); Integer y1= listOfTransmitters.get(0).getPositionY();
         Integer x2=  listOfTransmitters.get(1).getPositionX(); Integer y2= listOfTransmitters.get(1).getPositionY();
         Integer x3=  listOfTransmitters.get(2).getPositionX(); Integer y3= listOfTransmitters.get(2).getPositionY();
+
         double A = area (x1, y1, x2, y2, x3, y3);
 
         double A1 = area (positionXOfRobot, positionYOfRobot, x2, y2, x3, y3);
-
         double A2 = area (x1, y1, positionXOfRobot, positionYOfRobot, x3, y3);
-
         double A3 = area (x1, y1, x2, y2, positionXOfRobot, positionYOfRobot);
 
-        return (A<((A1 + A2 + A3)*1.2) && A>(( A1 + A2 + A3)*0.8));
+        return (A==(A1 + A2 + A3));
     }
 
-    private double area(Integer x1, Integer y1, Integer x2, Integer y2, Integer x3, Integer y3)
-    {
-        return Math.abs((x1*(y2-y3) + x2*(y3-y1)+
-                x3*(y1-y2))/2.0);
+    private double area(Integer x1, Integer y1, Integer x2, Integer y2, Integer x3, Integer y3) {
+        return Math.abs((x1*(y2-y3) + x2*(y3-y1)+ x3*(y1-y2))/2.0);
     }
 
     public Integer getPositionXOfRobot() {

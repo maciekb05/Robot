@@ -5,7 +5,7 @@ import javafx.scene.shape.Circle;
 public class Test {
     public static void main(String[] args) {
         Integer counter = 0;
-        for (int i=0;i<1000;i++){
+        for (int i=0;i<100000;i++){
             World world = new World(100,200, new Circle());
             boolean flag=false;
             try {
