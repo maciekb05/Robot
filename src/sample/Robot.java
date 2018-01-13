@@ -267,10 +267,10 @@ public class Robot extends Thread {
 
     private double area(Double x1, Double y1, Double x2, Double y2,
                         Double x3, Double y3)
-      {
-          return Math.abs((x1*(y2-y3) + x2*(y3-y1)+
-                  x3*(y1-y2))/2.0);
-      }
+    {
+        return Math.abs((x1*(y2-y3) + x2*(y3-y1)+
+                x3*(y1-y2))/2.0);
+    }
 
     private boolean checkIfInTriangle()
     {
