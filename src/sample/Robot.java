@@ -3,6 +3,7 @@ package sample;
 import javafx.fxml.FXML;
 import javafx.scene.shape.Circle;
 
+import java.math.BigInteger;
 import java.util.LinkedList;
 
 public class Robot extends Thread {
@@ -18,6 +19,7 @@ public class Robot extends Thread {
     private Integer moveCounter = 0;
     private LinkedList<LinkedList<Double>> transmitterPosition;
     private Integer idOfNearest;
+
     public Robot(World world, Circle robot) {
         this.world = world;
         this.robot = robot;
@@ -88,10 +90,6 @@ public class Robot extends Thread {
         transmitterPosition = findTransmittersPosition();
         LinkedList<Double> finalPosition = finalPosition();
         goToPosition(finalPosition);
-        System.out.println("Robot: "+world.getPositionXOfRobot()+", "+world.getPositionYOfRobot());
-        System.out.println("Antena: "+world.getListOfTransmitters().get(0).getPositionX()+", "+world.getListOfTransmitters().get(0).getPositionY());
-        System.out.println("Antena: "+world.getListOfTransmitters().get(1).getPositionX()+", "+world.getListOfTransmitters().get(1).getPositionY());
-        System.out.println("Antena: "+world.getListOfTransmitters().get(2).getPositionX()+", "+world.getListOfTransmitters().get(2).getPositionY());
     }
 
     private int findNearestTransmitter() {
@@ -110,32 +108,36 @@ public class Robot extends Thread {
     private void goToPosition(LinkedList<Double> finalPosition) throws InterruptedException {
         Integer x = finalPosition.get(0).intValue() - positionX;
         Integer y = finalPosition.get(1).intValue() - positionY;
-        if(x>0){
-            int i=0;
-            while (i < x && !checkIfInTriangle()){
-                move(Direction.EAST);
-                i++;
-            }
+        Integer numberOfVerticalMoves = Math.abs(y);
+        Integer numberOfHorizontalMoves = Math.abs(x);
+        Integer gcd = gcdnumber(numberOfHorizontalMoves,numberOfVerticalMoves);
+        Integer sum = numberOfHorizontalMoves + numberOfVerticalMoves;
+        Integer partialVerticalMove = numberOfVerticalMoves/gcd;
+        Integer partialHorizontalMove = numberOfHorizontalMoves/gcd;
+        Direction verticalDirection;
+        Direction horizontalDirection;
+        if(x>0) {
+            horizontalDirection = Direction.EAST;
+        } else {
+            horizontalDirection = Direction.WEST;
         }
-        if(x<0 && !checkIfInTriangle()){
-            int i=0;
-            while (i < -x && !checkIfInTriangle()){
-                move(Direction.WEST);
-                i++;
-            }
+        if(y>0) {
+            verticalDirection = Direction.NORTH;
+        } else {
+            verticalDirection = Direction.SOUTH;
         }
-        if(y>0 && !checkIfInTriangle()){
-            int i=0;
-            while (i < y && !checkIfInTriangle()){
-                move(Direction.NORTH);
-                i++;
+        for(int i = 0; i < sum/(partialHorizontalMove+partialVerticalMove); i++){
+            for (int j = 0; j < partialHorizontalMove; j++){
+                if(checkIfInTriangle())
+                    break;
+                else
+                    move(horizontalDirection);
             }
-        }
-        if(y<0 && !checkIfInTriangle()){
-            int i=0;
-            while (i < -y && !checkIfInTriangle()){
-                move(Direction.SOUTH);
-                i++;
+            for (int j = 0; j < partialVerticalMove; j++){
+                if(checkIfInTriangle())
+                    break;
+                else
+                    move(verticalDirection);
             }
         }
     }
@@ -281,5 +283,12 @@ public class Robot extends Thread {
         double A3 = area (x1, y1, x2, y2, Double.valueOf(positionX), Double.valueOf(positionY));
 
         return (A == A1 + A2 + A3);
+    }
+
+    private static int gcdnumber(int a, int b) {
+        BigInteger b1 = BigInteger.valueOf(a);
+        BigInteger b2 = BigInteger.valueOf(b);
+        BigInteger gcd = b1.gcd(b2);
+        return gcd.intValue();
     }
 }
