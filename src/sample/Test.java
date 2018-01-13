@@ -3,10 +3,11 @@ package sample;
 import javafx.scene.shape.Circle;
 
 public class Test {
+/*
     public static void main(String[] args) {
         World world = new World(100,200, new Circle());
         try {
-            world.getRobot().goToTriangle();
+            //world.getRobot().();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -19,4 +20,5 @@ public class Test {
             System.out.println(transmitter.getPositionY());
         }
     }
+*/
 }

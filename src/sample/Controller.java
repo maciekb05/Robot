@@ -49,9 +49,11 @@ public class Controller {
         transmitter2.setCenterY(world.getListOfTransmitters().get(1).getPositionY());
         transmitter3.setCenterX(world.getListOfTransmitters().get(2).getPositionX());
         transmitter3.setCenterY(world.getListOfTransmitters().get(2).getPositionY());
+
         System.out.println(transmitter1.getCenterX()+", "+transmitter1.getCenterY());
         System.out.println(transmitter2.getCenterX()+", "+transmitter2.getCenterY());
         System.out.println(transmitter3.getCenterX()+", "+transmitter3.getCenterY());
+
         line12.setStartX(world.getListOfTransmitters().get(0).getPositionX());
         line12.setStartY(world.getListOfTransmitters().get(0).getPositionY());
         line12.setEndX(world.getListOfTransmitters().get(1).getPositionX());
@@ -69,10 +71,12 @@ public class Controller {
 
         mapPane.setBorder(new Border(new BorderStroke(Paint.valueOf("black"),
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
         line12.setVisible(true);
         line23.setVisible(true);
         line13.setVisible(true);
         robot.setVisible(true);
+
         transmitter1.setVisible(true);
         transmitter2.setVisible(true);
         transmitter3.setVisible(true);

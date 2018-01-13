@@ -15,23 +15,6 @@ public class World {
     private final Integer factorA;
     private final Integer factorN;
 
-    public LinkedList<Double> measureRSSIs() {
-        LinkedList<Double> RSSIs = new LinkedList<>();
-        for (Transmitter transmitter : listOfTransmitters) {
-            Double distance = Math.sqrt(Math.pow(positionXOfRobot-transmitter.getPositionX(),2)
-                    +Math.pow(positionYOfRobot-transmitter.getPositionY(),2));
-            Double RSSI;
-            if(distance == 0){
-                RSSI = factorA.doubleValue();
-            }
-            else {
-                RSSI = factorA - factorN * Math.log10(distance);
-            }
-            RSSIs.add(RSSI);
-        }
-        return RSSIs;
-    }
-
     public Double measureRSSI(Integer id) {
         Transmitter transmitter = listOfTransmitters.get(id);
         Double distance = Math.sqrt(Math.pow(positionXOfRobot-transmitter.getPositionX(),2)
