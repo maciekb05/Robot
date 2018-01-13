@@ -71,6 +71,27 @@ public class World {
         return robot;
     }
 
+    public boolean isRobotInTriangle(){
+        Integer x1=  listOfTransmitters.get(0).getPositionX(); Integer y1= listOfTransmitters.get(0).getPositionY();
+        Integer x2=  listOfTransmitters.get(1).getPositionX(); Integer y2= listOfTransmitters.get(1).getPositionY();
+        Integer x3=  listOfTransmitters.get(2).getPositionX(); Integer y3= listOfTransmitters.get(2).getPositionY();
+        double A = area (x1, y1, x2, y2, x3, y3);
+
+        double A1 = area (positionXOfRobot, positionYOfRobot, x2, y2, x3, y3);
+
+        double A2 = area (x1, y1, positionXOfRobot, positionYOfRobot, x3, y3);
+
+        double A3 = area (x1, y1, x2, y2, positionXOfRobot, positionYOfRobot);
+
+        return (A<((A1 + A2 + A3)*1.2) && A>(( A1 + A2 + A3)*0.8));
+    }
+
+    private double area(Integer x1, Integer y1, Integer x2, Integer y2, Integer x3, Integer y3)
+    {
+        return Math.abs((x1*(y2-y3) + x2*(y3-y1)+
+                x3*(y1-y2))/2.0);
+    }
+
     public Integer getPositionXOfRobot() {
         return positionXOfRobot;
     }

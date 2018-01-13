@@ -13,7 +13,6 @@ public class Robot extends Thread {
 
     private enum Direction {NORTH, SOUTH, EAST, WEST}
     private final World world;
-    private Integer moveCounter = 0;
     private LinkedList<Double> previousRssi;
 
     public Robot(World world, Circle robot) {
@@ -35,43 +34,37 @@ public class Robot extends Thread {
             case NORTH:
                 if (world.getHeight() > world.getPositionYOfRobot() + 1) {
                     world.setPositionYOfRobot(world.getPositionYOfRobot() + 1);
-                    moveCounter++;
                 }
                 robot.setCenterY(robot.getCenterY()+1);
-                this.sleep(50);
+                //this.sleep(50);
                 break;
             case SOUTH:
                 if (world.getPositionYOfRobot() - 1 > 0) {
                     world.setPositionYOfRobot(world.getPositionYOfRobot() - 1);
-                    moveCounter++;
                 }
                 robot.setCenterY(robot.getCenterY()-1);
-                this.sleep(50);
+                //this.sleep(50);
                 break;
             case EAST:
                 if (world.getWidth() > world.getPositionXOfRobot() + 1) {
                     world.setPositionXOfRobot(world.getPositionXOfRobot() + 1);
-                    moveCounter++;
                 }
                 robot.setCenterX(robot.getCenterX()+1);
-                this.sleep(50);
+                //this.sleep(50);
                 break;
             case WEST:
                 if (world.getPositionXOfRobot() - 1 > 0) {
                     world.setPositionXOfRobot(world.getPositionXOfRobot() - 1);
-                    moveCounter++;
                 }
                 robot.setCenterX(robot.getCenterX()-1);
-                this.sleep(50);
+                //this.sleep(50);
                 break;
         }
     }
 
     private LinkedList<Direction> testMove() throws InterruptedException {
         LinkedList<Direction> whereToGo = new LinkedList<>();
-        previousRssi.add(world.measureRSSI(0));
-        previousRssi.add(world.measureRSSI(1));
-        previousRssi.add(world.measureRSSI(2));
+        setPreviousRSSI();
         Integer heavenFlag = 0;
         for(Direction d : Direction.values()) {
             move(d);
@@ -94,7 +87,6 @@ public class Robot extends Thread {
             oppositeMove(d);
         }
         if(heavenFlag.equals(4)){
-            System.out.println("To niebo?");
             heaven();
         }
         return whereToGo;
@@ -123,28 +115,25 @@ public class Robot extends Thread {
         System.out.println("pieklo");
     }
 
-    public void findHeaven() throws InterruptedException {
+    public boolean findHeaven() throws InterruptedException {
         LinkedList<Direction> whereToGo = new LinkedList<>();
         whereToGo = testMove();
         if(whereToGo.size()==0) {
             hell();
-            return;
+            return false;
         }
         if(whereToGo.size()==1){
-            System.out.println("To niebo1?");
             heaven();
-            return;
+            return true;
         }
         moveUntilBetter(whereToGo.get(0));
         moveUntilBetter(whereToGo.get(1));
-        System.out.println("To niebo2");
         heaven();
+        return true;
     }
 
     private void moveUntilBetter(Direction direction) throws InterruptedException {
-        previousRssi.add(world.measureRSSI(0));
-        previousRssi.add(world.measureRSSI(1));
-        previousRssi.add(world.measureRSSI(2));
+        setPreviousRSSI();
         move(direction);
         Integer goodMove = 2;
         while (goodMove.equals(2)){
@@ -158,5 +147,10 @@ public class Robot extends Thread {
             move(direction);
         }
         oppositeMove(direction);
+    }
+    private void setPreviousRSSI(){
+        previousRssi.add(world.measureRSSI(0));
+        previousRssi.add(world.measureRSSI(1));
+        previousRssi.add(world.measureRSSI(2));
     }
 }
