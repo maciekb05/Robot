@@ -1,8 +1,8 @@
 package sample;
 
-public class Transmitter {
-    private Integer positionX;
-    private Integer positionY;
+class Transmitter {
+    private final Integer positionX;
+    private final Integer positionY;
 
     Transmitter(Integer positionX, Integer positionY) {
         this.positionX = positionX;

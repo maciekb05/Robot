@@ -39,20 +39,37 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        world = new World(200, 400, robot);
+        final Integer height = 400;
+        final Integer width = 800;
 
-        mapPane.resize(world.getHeight(), world.getWidth());
+        world = new World(height, width, robot);
 
+        drawPane(width,height);
+        drawHeaven();
+        drawRobot();
+
+        restartButton.setDisable(true);
+    }
+
+    private void drawPane(Integer width, Integer height) {
+        mapPane.resize(width, height);
+        mapPane.setMinHeight(height);
+        mapPane.setMinWidth(width);
+
+        //PaneBorder
+        mapPane.setBorder(new Border(new BorderStroke(Paint.valueOf("black"),
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+    }
+
+    private void drawRobot(){
         robot.setFill(Color.BLACK);
         robot.setCenterX(world.getPositionXOfRobot());
         robot.setCenterY(world.getPositionYOfRobot());
-        transmitter1.setCenterX(world.getListOfTransmitters().get(0).getPositionX());
-        transmitter1.setCenterY(world.getListOfTransmitters().get(0).getPositionY());
-        transmitter2.setCenterX(world.getListOfTransmitters().get(1).getPositionX());
-        transmitter2.setCenterY(world.getListOfTransmitters().get(1).getPositionY());
-        transmitter3.setCenterX(world.getListOfTransmitters().get(2).getPositionX());
-        transmitter3.setCenterY(world.getListOfTransmitters().get(2).getPositionY());
 
+        robot.setVisible(true);
+    }
+
+    private void drawHeaven(){
         line12.setStartX(world.getListOfTransmitters().get(0).getPositionX());
         line12.setStartY(world.getListOfTransmitters().get(0).getPositionY());
         line12.setEndX(world.getListOfTransmitters().get(1).getPositionX());
@@ -68,13 +85,16 @@ public class Controller {
         line13.setEndX(world.getListOfTransmitters().get(2).getPositionX());
         line13.setEndY(world.getListOfTransmitters().get(2).getPositionY());
 
-        mapPane.setBorder(new Border(new BorderStroke(Paint.valueOf("black"),
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        transmitter1.setCenterX(world.getListOfTransmitters().get(0).getPositionX());
+        transmitter1.setCenterY(world.getListOfTransmitters().get(0).getPositionY());
+        transmitter2.setCenterX(world.getListOfTransmitters().get(1).getPositionX());
+        transmitter2.setCenterY(world.getListOfTransmitters().get(1).getPositionY());
+        transmitter3.setCenterX(world.getListOfTransmitters().get(2).getPositionX());
+        transmitter3.setCenterY(world.getListOfTransmitters().get(2).getPositionY());
 
         line12.setVisible(true);
         line23.setVisible(true);
         line13.setVisible(true);
-        robot.setVisible(true);
 
         transmitter1.setVisible(true);
         transmitter2.setVisible(true);
@@ -85,12 +105,13 @@ public class Controller {
     public void restart() {
         initialize();
         System.gc();
-        world.getRobot().start();
+        simButton.setDisable(false);
     }
 
     @FXML
     public void simulate() {
         world.getRobot().start();
         simButton.setDisable(true);
+        restartButton.setDisable(false);
     }
 }

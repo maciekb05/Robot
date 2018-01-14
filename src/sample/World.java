@@ -5,11 +5,11 @@ import javafx.scene.shape.Circle;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class World {
+class World {
     private final Integer height;
     private final Integer width;
-    private LinkedList<Transmitter> listOfTransmitters;
-    private Robot robot;
+    private final LinkedList<Transmitter> listOfTransmitters;
+    private final Robot robot;
     private Integer positionXOfRobot;
     private Integer positionYOfRobot;
     private final Integer factorA;
@@ -20,10 +20,9 @@ public class World {
         Double distance = Math.sqrt(Math.pow(positionXOfRobot-transmitter.getPositionX(),2)
                 +Math.pow(positionYOfRobot-transmitter.getPositionY(),2));
         Double RSSI;
-        if(distance == 0){
+        if(distance == 0) {
             RSSI = factorA.doubleValue();
-        }
-        else {
+        } else {
             RSSI = factorA - factorN * Math.log10(distance);
         }
         return RSSI;
@@ -33,14 +32,15 @@ public class World {
         this.height = height;
         this.width = width;
         Random random = new Random();
-        factorA = random.nextInt(height > width ? width : height)/10;
-        factorN = random.nextInt(10);
+        factorA = random.nextInt(height > width ? width : height)/10+1;
+        factorN = random.nextInt(10)+1;
         positionXOfRobot = random.nextInt(width-10)+5;
         positionYOfRobot = random.nextInt(height-10)+5;
         robot = new Robot(this, rob);
         listOfTransmitters = new LinkedList<>();
         for(int i=0; i<3; ++i){
-            Transmitter transmitter = new Transmitter(random.nextInt(width-10)+5, random.nextInt(height-10)+5);
+            Transmitter transmitter = new Transmitter(random.nextInt(width-10)+5,
+                                                        random.nextInt(height-10)+5);
             listOfTransmitters.add(transmitter);
         }
     }
