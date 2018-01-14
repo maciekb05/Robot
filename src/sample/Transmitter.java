@@ -1,10 +1,9 @@
 package sample;
 
-
 /**
  * Represents a transmitter in the world. It has only its position and getters methods.
  */
-class Transmitter {
+public class Transmitter {
     private final Integer positionX;
     private final Integer positionY;
 

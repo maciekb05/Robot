@@ -10,7 +10,7 @@ import java.util.Random;
  * It describes the way how the signal is interfere ({@link #measureRSSI(Integer)}).
  *
  */
-class World {
+public class World {
     private final Integer height;
     private final Integer width;
     private final LinkedList<Transmitter> listOfTransmitters;
