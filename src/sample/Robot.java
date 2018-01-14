@@ -5,6 +5,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import java.util.LinkedList;
 
+/**
+ * Represents Robot object in the World object. It allows you to check if robot is in a robots' heaven ({@link #inHeaven()}).
+ */
 public class Robot extends Thread {
     @FXML
     private final Circle robot;
@@ -14,6 +17,12 @@ public class Robot extends Thread {
     private final LinkedList<Double> previousRSSI;
     private Integer amIInHeaven = 0; // 1 - heaven, -1 - hell, 0- I have no idea
 
+    /**
+     * Construct a new Robot object.
+     *
+     * @param world the world where robot landed
+     * @param robot FXML parameter use to represent Robot in GUI
+     */
     Robot(World world, Circle robot) {
         this.world = world;
         this.robot = robot;
@@ -23,12 +32,48 @@ public class Robot extends Thread {
         previousRSSI.add(0.0);
     }
 
+
+    /**
+     * starts a thread of simulation
+     */
     public void run() {
         try {
-            findHeaven();
+            inHeaven();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Checks if robot is in heaven (triangle which has its vertices in transmitters). When he is far from heaven, method returns false.
+     * Otherwise he ascertains where he is and goes inside. After that method returns true.
+     *
+     * @return <code>true</code> when robot is in heaven (after method execution).
+     *         <code>false</code> otherwise
+     * @throws InterruptedException if sleep method is interrupted
+     */
+    public boolean inHeaven() throws InterruptedException {
+        LinkedList<Direction> whereToGo = testMove();
+        if(amIInHeaven.equals(-1)) {
+            hell();
+            return false;
+        }
+        if(amIInHeaven.equals(1)){
+            heaven();
+            return true;
+        }
+        if(whereToGo.size()==1){
+            moveUntilBetter(whereToGo.get(0));
+            heaven();
+            return true;
+        }
+        if(whereToGo.size()==2){
+            moveUntilBetter(whereToGo.get(0));
+            moveUntilBetter(whereToGo.get(1));
+            heaven();
+            return true;
+        }
+        return false;
     }
 
     private void move(Direction direction) throws InterruptedException{
@@ -116,30 +161,6 @@ public class Robot extends Thread {
 
     private void hell() {
         robot.setFill(Color.RED);
-    }
-
-    public boolean findHeaven() throws InterruptedException {
-        LinkedList<Direction> whereToGo = testMove();
-        if(amIInHeaven.equals(-1)) {
-            hell();
-            return false;
-        }
-        if(amIInHeaven.equals(1)){
-            heaven();
-            return true;
-        }
-        if(whereToGo.size()==1){
-            moveUntilBetter(whereToGo.get(0));
-            heaven();
-            return true;
-        }
-        if(whereToGo.size()==2){
-            moveUntilBetter(whereToGo.get(0));
-            moveUntilBetter(whereToGo.get(1));
-            heaven();
-            return true;
-        }
-        return false;
     }
 
     private void moveUntilBetter(Direction direction) throws InterruptedException {

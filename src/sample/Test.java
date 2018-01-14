@@ -9,7 +9,7 @@ class Test {
             World world = new World(500,1000, new Circle());
             boolean flag=false;
             try {
-                flag = world.getRobot().findHeaven();
+                flag = world.getRobot().inHeaven();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

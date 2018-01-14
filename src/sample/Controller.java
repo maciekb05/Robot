@@ -9,6 +9,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 
+/**
+ * Maintains the GUI of application. It defines how the buttons works {@link #simulate()}, {@link #restart()}.
+ */
 public class Controller {
     private World world;
     @FXML
@@ -37,6 +40,9 @@ public class Controller {
     @FXML
     Line line13;
 
+    /**
+     * Creates new World and draws all objects.
+     */
     @FXML
     public void initialize() {
         final Integer height = 400;
@@ -49,6 +55,27 @@ public class Controller {
         drawRobot();
 
         restartButton.setDisable(true);
+    }
+
+    /**
+     * Starts simulation.
+     */
+    @FXML
+    public void simulate() {
+        world.getRobot().start();
+        simButton.setDisable(true);
+        restartButton.setDisable(false);
+    }
+
+
+    /**
+     * Deletes old thread and initializes new simulation.
+     */
+    @FXML
+    public void restart() {
+        initialize();
+        System.gc();
+        simButton.setDisable(false);
     }
 
     private void drawPane(Integer width, Integer height) {
@@ -99,19 +126,5 @@ public class Controller {
         transmitter1.setVisible(true);
         transmitter2.setVisible(true);
         transmitter3.setVisible(true);
-    }
-
-    @FXML
-    public void restart() {
-        initialize();
-        System.gc();
-        simButton.setDisable(false);
-    }
-
-    @FXML
-    public void simulate() {
-        world.getRobot().start();
-        simButton.setDisable(true);
-        restartButton.setDisable(false);
     }
 }
